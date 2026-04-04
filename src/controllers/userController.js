@@ -1,5 +1,6 @@
-import { clearAllTablesService, clearTableService, createUserService, getUserByIdService, getUsersService, updateUserService } from "../services/userService.js";
-import { asyncHandler } from "../utils/apiError.js";
+import { clearAllTablesService, clearTableService, createUserService, deleteUserService, getUserByIdService, getUsersService, updateUserService } from "../services/userService.js";
+import { ApiError, asyncHandler } from "../utils/apiError.js";
+import { emailRegex } from "../utils/constants.js";
 
 const createUserController = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body
@@ -16,7 +17,7 @@ const createUserController = asyncHandler(async (req, res, next) => {
     res.status(201).json({
         status: "success",
         data,
-        message: "User successfully created"
+        message: "User created"
     })
 })
 
@@ -25,7 +26,7 @@ const getAllUsersController = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         status: "success",
-        results: users.length,
+        noOfUsers: users.length,
         data: users
     })
 })
@@ -48,7 +49,19 @@ const updateUserController = asyncHandler(async (req, res) => {
 
     res.status(200).json({
         status: "success",
-        data: updatedUser
+        data: updatedUser,
+        message: "User updated"
+    });
+});
+
+const deleteUserController = asyncHandler(async (req, res) => {
+    const userId = req.params.id;
+
+    deleteUserService(req.user, userId);
+
+    res.status(200).json({
+        status: "success",
+        message: "User deleted"
     });
 });
 
@@ -72,5 +85,5 @@ const clearTableController = asyncHandler(async (req, res) => {
     });
 });
 
-export { clearAllController, clearTableController, createUserController, getAllUsersController, getUserController, updateUserController };
+export { clearAllController, clearTableController, createUserController, deleteUserController, getAllUsersController, getUserController, updateUserController };
 

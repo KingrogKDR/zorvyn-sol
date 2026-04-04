@@ -1,8 +1,9 @@
 import bcrypt from "bcrypt";
-import { getRoleById, getRoleIdByName } from "../repository/roleRepo.js";
+import { deleteUserById, getRoleById, getRoleIdByName } from "../repository/roleRepo.js";
 import { clearAllTables, clearTable, createUser, findByEmail, getAllUsers, getUserById, updateUserById } from "../repository/userRepo.js";
-import { ForbiddenError, NotFoundError } from "../utils/apiError.js";
-import { ROLES } from "../utils/constants.js";
+import { ApiError, BadRequestError, ForbiddenError, NotFoundError } from "../utils/apiError.js";
+import { ROLE_ID, ROLES } from "../utils/constants.js";
+import { sanitizeUpdateData, validateUserUpdate } from "../utils/lib.js";
 
 async function createUserService(email, password) {
     const existingUser = findByEmail(email)
@@ -28,7 +29,7 @@ function getUsersService() {
 
 function getUserByIdService(requestingUser, targetUserId) {
     if (
-        requestingUser.role !== ROLES.ADMIN &&
+        requestingUser.role_id !== ROLE_ID.ADMIN &&
         String(requestingUser.id) !== String(targetUserId)
     ) {
         throw new ForbiddenError("Not allowed to view this user");
@@ -44,7 +45,7 @@ function getUserByIdService(requestingUser, targetUserId) {
 }
 
 function updateUserService(requestingUser, targetUserId, data) {
-    if (requestingUser.role !== ROLES.ADMIN) {
+    if (requestingUser.role_id !== ROLE_ID.ADMIN) {
         throw new ForbiddenError("Only admins can update users");
     }
 
@@ -53,11 +54,18 @@ function updateUserService(requestingUser, targetUserId, data) {
         throw new NotFoundError("User not found");
     }
 
+    const sanitizedData = sanitizeUpdateData(data, ["role", "status"]);
+    if (Object.keys(sanitizedData).length === 0) {
+        throw new BadRequestError("No valid fields provided for user update");
+    }
+
+    validateUserUpdate(sanitizedData)
+
     let role_id = null;
 
-    if (data.role) {
-        const roleId = getRoleIdByName(data.role);
-        if (!role) {
+    if (sanitizedData.role) {
+        const roleId = getRoleIdByName(sanitizedData.role);
+        if (!roleId) {
             throw new NotFoundError("Role not found");
         }
         role_id = roleId;
@@ -65,10 +73,29 @@ function updateUserService(requestingUser, targetUserId, data) {
 
     updateUserById(targetUserId, {
         role_id,
-        status: data.status
+        status: sanitizedData.status
     });
 
     return getUserById(targetUserId);
+}
+
+function deleteUserService(requestingUser, targetUserId) {
+    if (requestingUser.role !== ROLES.ADMIN) {
+        throw new ForbiddenError("Only admins can delete users");
+    }
+
+    // prevents self-delete
+    if (requestingUser.id === Number(targetUserId)) {
+        throw new BadRequestError("Admin cannot delete themselves");
+    }
+
+    const existingUser = getUserById(targetUserId);
+
+    if (!existingUser) {
+        throw new NotFoundError("User not found");
+    }
+
+    deleteUserById(targetUserId);
 }
 
 function clearAllTablesService(user) {
@@ -89,5 +116,5 @@ function clearTableService(user, tableName) {
     clearTable(tableName);
 }
 
-export { clearAllTablesService, clearTableService, createUserService, getUserByIdService, getUsersService, updateUserService };
+export { clearAllTablesService, clearTableService, createUserService, deleteUserService, getUserByIdService, getUsersService, updateUserService };
 

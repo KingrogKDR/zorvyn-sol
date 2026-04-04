@@ -21,6 +21,12 @@ class ApiError extends Error {
     }
 }
 
+class BadRequestError extends ApiError {
+    constructor(message = "Bad client request") {
+        super(400, message)
+    }
+}
+
 class NotFoundError extends ApiError {
     constructor(message = "Resource not found") {
         super(404, message);
@@ -74,5 +80,5 @@ function asyncHandler(fn) {
     };
 }
 
-export { ApiError, asyncHandler, ForbiddenError, globalErrorHandler, NotFoundError, UnauthorizedError };
+export { ApiError, asyncHandler, BadRequestError, ForbiddenError, globalErrorHandler, NotFoundError, UnauthorizedError };
 

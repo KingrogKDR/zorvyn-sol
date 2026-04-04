@@ -27,5 +27,13 @@ function getRoleById(roleId) {
     return row.role_name;
 }
 
-export { getRoleById, getRoleIdByName };
+function deleteUserById(userId) {
+    const query = `DELETE FROM users WHERE id = ?`;
+
+    const result = db.prepare(query).run(userId);
+
+    return result.changes; // number of rows affected
+}
+
+export { deleteUserById, getRoleById, getRoleIdByName };
 

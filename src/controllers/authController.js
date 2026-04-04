@@ -1,7 +1,6 @@
 import { loginService, signupService } from "../services/authService.js";
 import { asyncHandler } from "../utils/apiError.js";
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { emailRegex } from "../utils/constants.js";
 
 const loginController = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body

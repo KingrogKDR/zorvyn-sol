@@ -1,6 +1,6 @@
 import db from "../db/connection.js";
 import { ApiError } from "../utils/apiError.js";
-import { ROLES } from "../utils/constants.js";
+import { ALLOWED_TABLES_TO_MODIFY, ROLES } from "../utils/constants.js";
 import { getRoleIdByName } from "./roleRepo.js";
 
 function findByEmail(email) {
@@ -78,12 +78,10 @@ function updateUserById(userId, { role_id, status }) {
 }
 
 function clearAllTables() {
-    const tables = ["users", "role", "permission", "role_permissions"];
-
     const tx = db.transaction(() => {
         db.exec("PRAGMA foreign_keys = OFF;");
 
-        tables.forEach((table) => {
+        ALLOWED_TABLES_TO_MODIFY.forEach((table) => {
             db.prepare(`DELETE FROM ${table}`).run();
         });
 
@@ -93,10 +91,9 @@ function clearAllTables() {
     tx();
 }
 
-const ALLOWED_TABLES = ["users", "role", "permission", "role_permissions"]; // validating for avoiding SQL injection
 
 function clearTable(tableName) {
-    if (!ALLOWED_TABLES.includes(tableName)) {
+    if (!ALLOWED_TABLES_TO_MODIFY.includes(tableName)) {
         throw new ApiError(500, "Invalid table name");
     }
 
