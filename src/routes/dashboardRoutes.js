@@ -1,5 +1,5 @@
 import express from "express";
-import { getCategoryBreakdownController, getMonthlyTrendsController, getRecentRecordsController, getRecordSummaryController } from "../controllers/dashboardController.js";
+import { getCategoryBreakdownController, getMonthlyTrendsController, getRecentRecordsController, getRecordSummaryController, getWeeklyTrendsController } from "../controllers/dashboardController.js";
 import { permissionMiddleware } from "../middlewares/permissionMiddleware.js";
 import { ROLES } from "../utils/constants.js";
 
@@ -23,5 +23,11 @@ router.get(
     permissionMiddleware([ROLES.ADMIN, ROLES.ANALYST, ROLES.VIEWER]),
     getMonthlyTrendsController
 )
+router.get(
+    "/weekly-trends",
+    permissionMiddleware([ROLES.ADMIN, ROLES.ANALYST, ROLES.VIEWER]),
+    getWeeklyTrendsController
+)
+
 
 export default router

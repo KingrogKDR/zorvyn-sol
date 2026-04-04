@@ -11,4 +11,5 @@ router.get("/:id", permissionMiddleware([ROLES.ADMIN, ROLES.ANALYST, ROLES.VIEWE
 router.patch("/:id", permissionMiddleware([ROLES.ADMIN, ROLES.VIEWER]), updateRecordController)
 router.delete("/:id", permissionMiddleware([ROLES.ADMIN, ROLES.VIEWER]), deleteRecordController)
 
+
 export default router

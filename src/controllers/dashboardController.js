@@ -1,4 +1,4 @@
-import { getCategoryBreakdownService, getMonthlyTrendsService, getRecentRecordsService, getRecordSummaryService } from "../services/dashboardService.js";
+import { getCategoryBreakdownService, getMonthlyTrendsService, getRecentRecordsService, getRecordSummaryService, getWeeklyTrendsService } from "../services/dashboardService.js";
 import { asyncHandler } from "../utils/apiError.js";
 
 const getRecordSummaryController = asyncHandler(async (req, res) => {
@@ -37,5 +37,14 @@ const getMonthlyTrendsController = asyncHandler(async (req, res) => {
     });
 });
 
-export { getCategoryBreakdownController, getMonthlyTrendsController, getRecentRecordsController, getRecordSummaryController };
+const getWeeklyTrendsController = asyncHandler(async (req, res) => {
+    const data = getWeeklyTrendsService(req.user, req.query);
+
+    res.json({
+        status: "success",
+        data
+    });
+});
+
+export { getCategoryBreakdownController, getMonthlyTrendsController, getRecentRecordsController, getRecordSummaryController, getWeeklyTrendsController };
 

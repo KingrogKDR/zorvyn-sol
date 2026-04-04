@@ -1,4 +1,4 @@
-import { getCategoryBreakdown, getMonthlyTrends, getRecentRecords, getUserRecordSummary } from "../repository/dashboardRepo.js";
+import { getCategoryBreakdown, getMonthlyTrends, getRecentRecords, getUserRecordSummary, getWeeklyTrends } from "../repository/dashboardRepo.js";
 import { BadRequestError } from "../utils/apiError.js";
 import { MAX_LIMIT } from "../utils/constants.js";
 import { resolveUserScope, validateSummaryFilters } from "../utils/lib.js";
@@ -92,5 +92,28 @@ function getMonthlyTrendsService(user, filters = {}) {
     };
 }
 
-export { getCategoryBreakdownService, getMonthlyTrendsService, getRecentRecordsService, getRecordSummaryService };
+function getWeeklyTrendsService(user, filters = {}) {
+    const validatedFilters = validateSummaryFilters(filters);
+
+    const targetUserId = resolveUserScope(
+        user,
+        validatedFilters.user_id
+    );
+
+    validatedFilters.user_id = targetUserId;
+
+    const result = getWeeklyTrends(validatedFilters);
+
+    return {
+        user_id: targetUserId,
+        trends: result.map(row => ({
+            week: row.week,
+            totalIncome: row.income || 0,
+            totalExpense: row.expense || 0,
+            netBalance: (row.income || 0) - (row.expense || 0)
+        }))
+    };
+}
+
+export { getCategoryBreakdownService, getMonthlyTrendsService, getRecentRecordsService, getRecordSummaryService, getWeeklyTrendsService };
 

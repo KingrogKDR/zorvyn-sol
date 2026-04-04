@@ -49,5 +49,7 @@ const deleteRecordController = asyncHandler(async (req, res) => {
     });
 });
 
+
+
 export { createRecordController, deleteRecordController, getAllRecordsController, getRecordController, updateRecordController };
 

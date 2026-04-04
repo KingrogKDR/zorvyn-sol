@@ -36,16 +36,14 @@ function getRecordsService(user, filters) {
 function getRecordByIdService(requestingUser, targetRecordId) {
     const record = getRecordById(targetRecordId);
 
+    if (!record) {
+        throw new NotFoundError("Record not found");
+    }
     const isAdmin = requestingUser.role_id === ROLE_ID.ADMIN || requestingUser.role_id === ROLE_ID.ANALYST
 
     const isOwner = requestingUser.id === record.user_id
     if (!isAdmin && !isOwner) {
         throw new ForbiddenError("Not allowed to view this user");
-    }
-
-
-    if (!record) {
-        throw new NotFoundError("Record not found");
     }
 
     return record;

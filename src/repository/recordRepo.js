@@ -123,5 +123,6 @@ function deleteRecordById(recordId) {
     return result.changes; // rows affected
 }
 
+
 export { createRecord, deleteRecordById, findRecords, getRecordById, updateRecordById };
 
