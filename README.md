@@ -27,10 +27,7 @@ A backend API for a financial dashboard system, including JWT auth, role-based a
 
 ## Architecture
 
-```
 ![Architecture](images/architecture.png)
-
-```
 
 ---
 
