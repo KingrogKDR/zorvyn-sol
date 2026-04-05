@@ -2,9 +2,27 @@ import jwt from "jsonwebtoken";
 import { findById } from "../repository/userRepo.js";
 import { asyncHandler, UnauthorizedError } from "../utils/apiError.js";
 
+const getTokenFromRequest = (req) => {
+    let token = null;
+
+    if (req.cookies && req.cookies.token) {
+        token = req.cookies.token;
+    }
+
+    else if (req.headers.authorization) {
+        const authHeader = req.headers.authorization;
+
+        if (authHeader.startsWith("Bearer ")) {
+            token = authHeader.split(" ")[1];
+        }
+    }
+
+    return token;
+};
+
 const authMiddleware = asyncHandler(async (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        const token = getTokenFromRequest(req);
 
         if (!token) {
             throw new UnauthorizedError("Token missing");

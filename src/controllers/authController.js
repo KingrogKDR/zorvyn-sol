@@ -1,5 +1,5 @@
 import { loginService, signupService } from "../services/authService.js";
-import { asyncHandler } from "../utils/apiError.js";
+import { ApiError, asyncHandler } from "../utils/apiError.js";
 import { emailRegex } from "../utils/constants.js";
 
 const loginController = asyncHandler(async (req, res, next) => {

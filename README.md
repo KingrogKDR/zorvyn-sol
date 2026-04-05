@@ -31,7 +31,7 @@ Table of Contents
 
 **Layered architecture**: controllers handle request/response, services own business logic, repositories abstract the database.
 
-**JWT authentication**: stateless, token passed via cookies. No server-side sessions. Tokens are valid until expiry; no blacklist is implemented.
+**JWT authentication**: stateless, token passed via cookies and the Authorization Bearer token. No server-side sessions. Tokens are valid until expiry; no blacklist is implemented.
 
 **Token bucket rate limiting**: allows controlled bursts, applied at the middleware level. In future, a shared store (e.g. Redis) can be used for scaling to production.
 
@@ -116,12 +116,12 @@ sqlite3 ./zorvyn.db # to access the database in the cli
 
 ## API Reference
 
-All record and summary routes require `Cookie: <token>`.
+All record and summary routes require `Cookie: token=<token>` or `Authentication: Bearer <token>`.
 
 ### Auth
 
 ```
-POST /api/auth/register   { email, password } -> { token } stored as a cookie
+POST /api/auth/signup   { email, password } -> { token } stored as a cookie
 {
   "email": "user@test.com",
   "password": "password123"
