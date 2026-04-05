@@ -112,7 +112,7 @@ sqlite3 ./zorvyn.db # to access the database in the cli
 
 Run `npm run dev`during the first initialization to make sure the database tables and an admin user are seeded. Otherwise it may throw errors.
 
-I have seeded an admin user to make it easier for testing out the almost all endpoints.
+I have seeded an admin user to make it easier for testing out the other endpoints.
 
 > The cron job currently runs only when the server runs and not in the background.
 
