@@ -107,7 +107,7 @@ ADMIN_PASSWORD=ADMIN_PASSWORD
 ```bash
 npm run dev         # start server
 npm test            # run tests
-sqlite3 ./zorvyn.db # to access the database in the cli
+sqlite3 ./vyn.db # to access the database in the cli
 ```
 
 > The cron job currently runs only when the server runs and not in the background.
